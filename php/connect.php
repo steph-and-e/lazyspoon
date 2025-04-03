@@ -3,8 +3,8 @@
     try {
         $dbh = new PDO(
             "mysql:host=localhost;dbname=faghanim_db",
-            "root",
-            ""
+            "faghanim",
+            "13821382Mo@"
         );
     }
     catch (Exception $e) {
