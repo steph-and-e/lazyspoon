@@ -2,7 +2,7 @@
 
     try {
         $dbh = new PDO(
-            "mysql:host=localhost;dbname=lazy_spoon",
+            "mysql:host=localhost;dbname=faghanim_db",
             "root",
             ""
         );
