@@ -5,47 +5,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login</title>
-    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js"></script>
+
 </head>
 
 <body>
     <?php
     include "connect.php";
 
-    function fetchUser($email,$dbh)
+    function fetchUser($identifier, $dbh)
     {
-        $command = "SELECT password_hash FROM users WHERE email = ?";
-        $stmt = $dbh->prepare($command);
-        $stmt->execute([$email]);
-        return $stmt->fetchColumn();
-    }
+        if (empty($identifier)) {
+            return false;
+        }
 
-    function validateLogin($password, $hash)
-    {
-        var_dump($hash);
-        if (!$hash) {
-            echo "<p style= color: red;>No account found with that username or email. Try another or register new one</p>";
-            return;
-        } elseif (password_verify($password, $hash)) {
-            echo "<p style= color: green;>Login successful</p>";
+        // Check if identifier is email
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $command = "SELECT * FROM users WHERE email = ?";
         } else {
-            echo "<p style='color: red;'>Incorrect password.Try again! <a href='reset_password.php'>Forgot your password?</a></p>";
+            $command = "SELECT * FROM users WHERE username = ?";
+        }
+
+        try {
+            $stmt = $dbh->prepare($command);
+            $stmt->execute([$identifier]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            return false;
         }
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST"){
-        $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
+
+
+    function validateLogin($password, $user)
+    {
+        if (!$user) {
+            echo "<p class='error'>No account found with that username or email.</p>";
+            return false;
+        } elseif (password_verify($password, $user['password_hash'])) {
+            // Start session and store user data
+            include 'session.php';
+            session_start();
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['logged_in'] = true;
+
+            echo "<p class='success'>Login successful! Redirecting...</p>";
+            header("Refresh: 2; url=dashboard.php"); // Redirect after 2 seconds
+            return true;
+        } else {
+            echo "<p class='error'>Incorrect password. Try again! <a href='reset_password.php'>Forgot your password?</a></p>";
+            return false;
+        }
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $identifier = filter_input(INPUT_POST, "identifier", FILTER_SANITIZE_SPECIAL_CHARS);
         $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
-    
-    
-        $hash = fetchUser($email,$dbh);
-        validateLogin($password, $hash);
+
+        $user = fetchUser($identifier, $dbh);
+        validateLogin($password, $user);
     }
     ?>
     <form class="form" method="post" action="login.php">
         <div class="flex-column">
-            <label>Email </label>
+            <label>Username or Email</label>
         </div>
         <div class="inputForm">
             <svg height="20" viewBox="0 0 32 32" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -53,21 +81,32 @@
                     <path d="m30.853 13.87a15 15 0 0 0 -29.729 4.082 15.1 15.1 0 0 0 12.876 12.918 15.6 15.6 0 0 0 2.016.13 14.85 14.85 0 0 0 7.715-2.145 1 1 0 1 0 -1.031-1.711 13.007 13.007 0 1 1 5.458-6.529 2.149 2.149 0 0 1 -4.158-.759v-10.856a1 1 0 0 0 -2 0v1.726a8 8 0 1 0 .2 10.325 4.135 4.135 0 0 0 7.83.274 15.2 15.2 0 0 0 .823-7.455zm-14.853 8.13a6 6 0 1 1 6-6 6.006 6.006 0 0 1 -6 6z"></path>
                 </g>
             </svg>
-            <input type="text" class="input" placeholder="Enter your Email" name="email">
+            <input type="text" class="input" placeholder="Enter your Username or Email" name="identifier">
         </div>
 
         <div class="flex-column">
             <label>Password </label>
         </div>
         <div class="inputForm">
-            <svg height="20" viewBox="-64 0 512 512" width="20" xmlns="http://www.w3.org/2000/svg">
+            <svg
+                height="20"
+                viewBox="-64 0 512 512"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg">
                 <path d="m336 512h-288c-26.453125 0-48-21.523438-48-48v-224c0-26.476562 21.546875-48 48-48h288c26.453125 0 48 21.523438 48 48v224c0 26.476562-21.546875 48-48 48zm-288-288c-8.8125 0-16 7.167969-16 16v224c0 8.832031 7.1875 16 16 16h288c8.8125 0 16-7.167969 16-16v-224c0-8.832031-7.1875-16-16-16zm0 0"></path>
                 <path d="m304 224c-8.832031 0-16-7.167969-16-16v-80c0-52.929688-43.070312-96-96-96s-96 43.070312-96 96v80c0 8.832031-7.167969 16-16 16s-16-7.167969-16-16v-80c0-70.59375 57.40625-128 128-128s128 57.40625 128 128v80c0 8.832031-7.167969 16-16 16zm0 0"></path>
             </svg>
-            <input type="password" class="input" placeholder="Enter your Password" name="password">
-            <!-- <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
-                <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path>
-            </svg> -->
+
+            <input id="password" type="password" class="input" placeholder="Enter your Password" name="password" />
+
+            <span class="toggle-password">
+                <svg class="eye-icon eye-open" viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5z" />
+                </svg>
+                <svg class="eye-icon eye-closed" viewBox="0 0 24 24" width="20" height="20" style="display:none;">
+                    <path d="M11.83 9L15 12.16V12a3 3 0 0 0-3-3h-.17m-4.3.8l1.55 1.55c-.05.21-.08.42-.08.65a3 3 0 0 0 3 3c.22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53a5 5 0 0 1-5-5c0-.79.2-1.53.53-2.2M2 4.27l2.28 2.28.45.45C3.08 8.3 1.78 10 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.43.42L19.73 22 21 20.73 3.27 3M12 7a5 5 0 0 1 5 5c0 .64-.13 1.26-.36 1.82l2.93 2.93c1.5-1.25 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-4 .7l2.17 2.15C10.74 7.13 11.35 7 12 7z" />
+                </svg>
+            </span>
         </div>
 
         <div class="flex-row">
