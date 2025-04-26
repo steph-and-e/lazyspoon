@@ -158,36 +158,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitRecipe'])) {
             json_encode($recipe['instructions'])  // JSON encode instructions list
         ];
         $success = $stmt->execute($params);
-
-        //$recipeId = $dbh->lastInsertId(); // Get the id for this recipe
+        $recipeId = $dbh->lastInsertId(); // Get the id for this recipe
 
         // 2. For each common ingredient found, add it to the ingredients list and link it to the recipe
-        // foreach($recipe['commonIngredients'] as $ingredientName) {
-            // echo "<p>".$ingredientName."</p>";
+        echo "<p>".$recipeId."</p>";
+        foreach($recipe['commonIngredients'] as $ingredientName) {
+            echo "<p>".$ingredientName."</p>";
             // Check if ingredient exists
-            // $command = "SELECT id FROM ingredients WHERE name = ?";
-            // $stmt = $dbh->prepare($command);
-            // $params = [$ingredientName];
-            // $success = $stmt->execute($params);
-            // $ingredient = $stmt->fetch(PDO::FETCH_ASSOC);
-            // if ($ingredient) {
-            //     $ingredientId = $ingredient['id'];
-            // }
-        //     // Insert new ingredient
-        //     else {
-        //         $command = "INSERT INTO ingredients (name) VALUES (?)";
-        //         $stmt = $dbh->prepare($command);
-        //         $params = [$ingredientName];
-        //         $success = $stmt->execute($params);
-        //         $ingredientId = $dbh->lastInsertId(); // Get the id for this ingredient
-        //     }
+            $command = "SELECT id FROM ingredients WHERE name = ?";
+            $stmt = $dbh->prepare($command);
+            $params = [$ingredientName];
+            $success = $stmt->execute($params);
+            $ingredient = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($ingredient) {
+                $ingredientId = $ingredient['id'];
+            }
+            // Insert new ingredient
+            else {
+                $command = "INSERT INTO ingredients (name) VALUES (?)";
+                $stmt = $dbh->prepare($command);
+                $params = [$ingredientName];
+                $success = $stmt->execute($params);
+                $ingredientId = $dbh->lastInsertId(); // Get the id for this ingredient
+            }
             
             // 3. Link the recipe and ingredient
-            // $command = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?,?)";
-            // $stmt = $dbh->prepare($command);
-            // $params = [$recipeId, $ingredientId]; // WHERE AM I GETTING RECIPEID FROM
-            // $success = $stmt->execute($params);
-        // }
+            $command = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?,?)";
+            $stmt = $dbh->prepare($command);
+            $params = [$recipeId, $ingredientId]; // WHERE AM I GETTING RECIPEID FROM
+            $success = $stmt->execute($params);
+        }
         
         // Clear the session
         unset($_SESSION['scraped_recipe']);
