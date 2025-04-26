@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>register</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/login.css">
 </head>
 
 <body>
     <?php
+    try {
     include "connect.php";
 
     function usernameExists($username, $dbh)
@@ -60,6 +61,9 @@
         } else {
             echo "<p>❌ Please fill in all fields.</p>";
         }
+    }
+    } catch (Exception $e) {
+        die("ERROR:  {$e->getMessage()}");
     }
     ?>
     <form class="form" method="post" action="register.php">
@@ -115,7 +119,7 @@
 
         <button class="button-submit">Sign Up</button>
         <p class="p">Already have a account? <span class="span"><a href="login.php">login</a></span></p>
-        <div class="flex-row">
+        <!-- <div class="flex-row">
             <button class="btn google">
                 <svg
                     version="1.1"
@@ -152,7 +156,7 @@
 
                 Google
             </button>
-        </div>
+        </div> -->
     </form>
 </body>
 
