@@ -37,7 +37,7 @@
         if (count($jsonLdData)===1) {
             $jsonLdData = $jsonLdData[0];
         }
-        echo var_dump ($jsonLdData);
+        //echo var_dump ($jsonLdData);
 
         // 1. Extract recipe name
         // Get title from "og:title" meta tag
