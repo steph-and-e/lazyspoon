@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 26, 2025 at 09:31 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost
+-- Generation Time: Apr 27, 2025 at 06:53 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `faghanim_db`
+-- Database: `lazy_spoon`
 --
 
 -- --------------------------------------------------------
@@ -43,7 +43,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `role`, `created_at`, `last_activity`, `last_login`) VALUES
-(4, 'Xmwo3i', '1382m.mostafa@gmail.com', '$2y$10$39QWfZmbml3Ju3VRduDXWeOv92BEzpUR0b7rivtUR1ibpCT565k2G', 'user', '2025-04-26 18:20:36', NULL, NULL);
+(4, 'Xmwo3i', '1382m.mostafa@gmail.com', '$2y$10$39QWfZmbml3Ju3VRduDXWeOv92BEzpUR0b7rivtUR1ibpCT565k2G', 'user', '2025-04-26 18:20:36', NULL, NULL),
+(5, 'steph_and_ee', 'stephanie.mingwei.li@gmail.com', '$2y$10$.P.IyKYe/G8z1oT/HK6ZguOPi4.hVVSPzF.OcUpHSi4QBNlJ2jZoa', 'user', '2025-04-27 14:02:11', NULL, NULL),
+(6, 'admin', 'stephie.li.wefie@gmail.com', '$2y$10$puOFFBSrI8uDFZMYEbhaL.SQ8HmohQG8Z7PKOD7yXIzrAQ0Uay9zW', 'admin', '2025-04-27 14:08:56', NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -65,7 +67,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
