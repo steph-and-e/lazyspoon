@@ -16,7 +16,8 @@ if ($query) {
     
     // Return the results as JSON
     echo json_encode($ingredients);
-} else {
+}
+else {
     echo json_encode([]);
 }
 ?>

@@ -1,14 +1,11 @@
 <?php
-session_start();
+// Include the database connection
 include "connect.php";
 
 // Process the search form submission
 $searchResults = [];
-if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['ingredients'])) {
-    // Sanitize input
-    $ingredients = array_map('trim', explode(',', $_POST['ingredients']));
-
-    // 1. Fetch recipes based on ingredients
+if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
+    $ingredients = array_map('trim', explode(',', $_GET['ingredients']));
     $placeholders = implode(',', array_fill(0, count($ingredients), '?'));
     $command = "
         SELECT r.id, r.title, r.url, r.cover_image
@@ -17,12 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['ingredients'])) {
         INNER JOIN ingredients i ON ri.ingredient_id = i.id
         WHERE i.name IN ($placeholders)
         GROUP BY r.id
-        HAVING COUNT(DISTINCT i.name) = ?  -- Match all ingredients
+        HAVING COUNT(DISTINCT i.name) = ?
     ";
     $stmt = $dbh->prepare($command);
     $params = array_merge($ingredients, [count($ingredients)]);
     $stmt->execute($params);
-
     $searchResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
@@ -33,20 +29,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['ingredients'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Search</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-
-    <h1>Search Recipes</h1>
-
-    <!-- Search Form -->
-    <form method="post">
-        <label for="ingredients">Enter Ingredients (comma separated):</label>
-        <input type="text" id="ingredients" name="ingredients" required>
-        <button type="submit">Search</button>
+    <h1>Recipe Search</h1>
+    <form method="get" action="search.php">
+        <label for="ingredients">Enter Ingredients (start typing):</label>
+        <input type="text" id="ingredients" name="ingredients" autocomplete="off" required>
+        <ul id="suggestions-list" style="display:none;"></ul>
+        <button type="submit">Search Recipes</button>
     </form>
 
-    <!-- Display Search Results -->
     <?php if (!empty($searchResults)): ?>
         <h2>Recipes Found</h2>
         <ul>
@@ -57,9 +50,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['ingredients'])) {
                 </li>
             <?php endforeach; ?>
         </ul>
-    <?php elseif ($_SERVER["REQUEST_METHOD"] == "POST"): ?>
+    <?php elseif ($_SERVER["REQUEST_METHOD"] == "GET"): ?>
         <p>No recipes found with those ingredients.</p>
     <?php endif; ?>
 
+    <script src="../js/search.js"></script>
 </body>
 </html>
