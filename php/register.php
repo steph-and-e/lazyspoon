@@ -86,7 +86,6 @@
                     $success = $stmt->execute([$username, $email, $hash, "user"]);
 
                     if ($success) {
-                        echo "<div class='message-container'><p class='success'>✅ Registration successful! Redirecting...</p></div>";
                         echo '<script>
                         document.querySelectorAll(".inputForm").forEach(el => {
                             el.classList.add("success");
