@@ -40,7 +40,7 @@
 
                 // Validate inputs
                 if (empty($email) || empty($username) || empty($password)) {
-                    echo "<div class='message-container'><p class='error'>❌ Please fill in all fields.</p></div>";
+                    echo "<div class='message-container'><p class='error'>Please fill in all fields.</p></div>";
                     echo '<script>
                     document.querySelectorAll(".inputForm").forEach(el => {
                         el.classList.add("error");
@@ -50,7 +50,7 @@
                 }
 
                 if (emailExists($email, $dbh)) {
-                    echo "<div class='message-container'><p class='error'>❌ This email is already taken.</p></div>";
+                    echo "<div class='message-container'><p class='error'>This email is already taken.</p></div>";
                     echo '<script>
                     document.querySelector("input[name=\"email\"]").closest(".inputForm").classList.add("error");
                 </script>';
@@ -58,7 +58,7 @@
                 }
 
                 if (usernameExists($username, $dbh)) {
-                    echo "<div class='message-container'><p class='error'>❌ This username is already taken.</p></div>";
+                    echo "<div class='message-container'><p class='error'>This username is already taken.</p></div>";
                     echo '<script>
                     document.querySelector("input[name=\"username\"]").closest(".inputForm").classList.add("error");
                 </script>';
@@ -66,7 +66,7 @@
                 }
 
                 if (strlen($password) < 8) {
-                    echo "<div class='message-container'><p class='error'>❌ Password must be at least 8 characters.</p></div>";
+                    echo "<div class='message-container'><p class='error'>Password must be at least 8 characters.</p></div>";
                     echo '<script>
                     document.querySelector("input[name=\"password\"]").closest(".inputForm").classList.add("error");
                 </script>';
@@ -76,7 +76,7 @@
                 // Hash the password
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 if ($hash === false) {
-                    echo "<p class='error'>❌ Failed to secure your password. Please try again.</p>";
+                    echo "<p class='error'>Failed to secure your password. Please try again.</p>";
                     return false;
                 }
 
@@ -103,19 +103,19 @@
                         $_SESSION['logged_in'] = true;
                         $_SESSION['created_at'] = time();
 
-                        echo "<p class='success'>✅ Registration successful! Redirecting to login...</p>";
+                        echo "<p class='success'>Registration successful! Redirecting to login...</p>";
 
                         // Redirect to member area
                         //header("Refresh: 2; url=dashboard.php");
-                        header("Refresh: 2; url=login.php");
+                        header("Refresh: 2; url=search.php");
                         return true;
                     } else {
-                        echo "<p class='error'>❌ There was an error with the registration. Please try again.</p>";
+                        echo "<p class='error'>There was an error with the registration. Please try again.</p>";
                         return false;
                     }
                 } catch (PDOException $e) {
                     error_log("Registration error: " . $e->getMessage());
-                    echo "<p class='error'>❌ A system error occurred. Please try again later.</p>";
+                    echo "<p class='error'>A system error occurred. Please try again later.</p>";
                     return false;
                 }
             }
@@ -128,7 +128,7 @@
                 if (!empty($username) && !empty($email) && !empty($password)) {
                     register($email, $username, $password, $dbh);
                 } else {
-                    echo "<p>❌ Please fill in all fields.</p>";
+                    echo "<p class='error'>Please fill in all fields.</p>";
                 }
             }
             ?>
