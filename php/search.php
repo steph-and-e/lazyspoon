@@ -29,10 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Search</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style2.css">
 </head>
 <body>
-    <h1>Recipe Search</h1>
+    <h1>USER: Recipe Search</h1>
     <form method="get" action="search.php">
         <label for="ingredients">Enter Ingredients (start typing):</label>
         <input type="text" id="ingredients" name="ingredients" autocomplete="off" required>

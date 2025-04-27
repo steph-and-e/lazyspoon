@@ -209,10 +209,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelScraping'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Scraper</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/style2.css">
 </head>
 <body>
-    <h1>Recipe Scraper</h1>
+    <h1>ADMIN: Recipe Scraper</h1>
     
     <!-- Recipe Input Form -->
     <form method="post">

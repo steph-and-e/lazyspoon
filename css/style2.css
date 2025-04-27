@@ -1,0 +1,113 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+h1 {
+    text-align: center;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+/* Form Styling */
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Recipe Data Display */
+
+h2 {
+    margin-top: 20px;
+    color: #333;
+}
+
+ul, ol {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+ul li, ol li {
+    margin-bottom: 8px;
+}
+
+ul li {
+    list-style-type: square;
+}
+
+/* Image Styling */
+img {
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+/* Submit Buttons */
+button[type="submit"] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    border: none;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+button[type="submit"]:active {
+    background-color: #3e8e41;
+}
+
+/* Autocomplete suggestions list */
+
+#suggestions-list {
+    list-style-type: none;
+    
+    background-color: white;
+    border: 1px solid #ccc;
+    position: absolute;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+  }
+  
+  #suggestions-list li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  #suggestions-list li:hover {
+    background-color: #f0f0f0;
+  }
