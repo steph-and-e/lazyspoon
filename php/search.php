@@ -32,6 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
     <link rel="stylesheet" href="../css/style2.css">
 </head>
 <body>
+    <div class="logout-container">
+        <a href="logout.php" class="logout-button">Logout</a>
+    </div>
     <h1>USER: Recipe Search</h1>
     <form method="get" action="search.php">
         <label for="ingredients">Enter Ingredients (start typing):</label>

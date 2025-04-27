@@ -212,8 +212,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelScraping'])) {
     <link rel="stylesheet" href="../css/style2.css">
 </head>
 <body>
+    <div class="logout-container">
+        <a href="logout.php" class="logout-button">Logout</a>
+    </div>
     <h1>ADMIN: Recipe Scraper</h1>
-    
     <!-- Recipe Input Form -->
     <form method="post">
         <label for="recipeURL">Enter Recipe URL:</label>
