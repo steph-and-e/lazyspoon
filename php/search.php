@@ -1,4 +1,19 @@
 <?php
+/**
+ * Author: Stephanie
+ * Student Number: 400562559
+ * Date Created: 2025/04/24
+ * Description: Allows users to search for recipes based on ingredients
+ */
+
+// Start the session
+session_start();
+$username = $_SESSION['username'];
+// $_SESSION['user_id'];
+// $_SESSION['username'];
+// $_SESSION['email'];
+// $_SESSION['role'];
+
 // Include the database connection
 include "connect.php";
 
@@ -29,10 +44,18 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Search</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style2.css">
 </head>
 <body>
-    <h1>Recipe Search</h1>
+
+    <!-- Profile and logout button -->
+    <div class="profile-container">
+        <p id="username"><?=$username?></p>
+        <a href="logout.php" class="logout-button">Logout</a>
+    </div>
+
+    <!-- Search for ingredients with autocomplete -->
+    <h1>USER: Recipe Search</h1>
     <form method="get" action="search.php">
         <label for="ingredients">Enter Ingredients (start typing):</label>
         <input type="text" id="ingredients" name="ingredients" autocomplete="off" required>
@@ -40,6 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
         <button type="submit">Search Recipes</button>
     </form>
 
+    <!-- Display each matched recipe on the page -->
     <?php if (!empty($searchResults)): ?>
         <h2>Recipes Found</h2>
         <ul>

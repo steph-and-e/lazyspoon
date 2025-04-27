@@ -1,7 +1,18 @@
 <?php
+/**
+ * Author: Stephanie
+ * Student Number: 400562559
+ * Date Created: 2025/04/24
+ * Description: Allows admins to scrape recipes from the web and add them to the database
+ */
 
-// Start session
+// Start the session
 session_start();
+$username = $_SESSION['username'];
+// $_SESSION['user_id'];
+// $_SESSION['username'];
+// $_SESSION['email'];
+// $_SESSION['role'];
 
 // Include other PHP files
 include "connect.php";
@@ -209,12 +220,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelScraping'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Scraper</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/style2.css">
 </head>
 <body>
-    <h1>Recipe Scraper</h1>
-    
+    <!-- Profile and logout button -->
+    <div class="profile-container">
+        <p id="username"><?=$username?></p>
+        <a href="logout.php" class="logout-button">Logout</a>
+    </div>
     <!-- Recipe Input Form -->
+    <h1>ADMIN: Add Recipes To Database</h1>
     <form method="post">
         <label for="recipeURL">Enter Recipe URL:</label>
         <input type="text" id="recipeURL" name="recipeURL" required>
@@ -261,7 +276,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelScraping'])) {
                 <button type="submit" name="submitRecipe">Submit Recipe to Database</button>
             </form>
 
-            <!-- Allow admin to cancel recipe scraping (goes back to ___ page) -->
+            <!-- Allow admin to cancel recipe scraping (goes back to admin dashboard) -->
             <form method="post">
                 <button type="submit" name="cancelScraping">Cancel</button>
             </form>

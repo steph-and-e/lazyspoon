@@ -1,4 +1,16 @@
 <?php
+/**
+ * Author: Stephanie
+ * Student Number: 400562559
+ * Date Created: 2025/04/24
+ * Description: Matches raw ingredients list with common ingredients
+ */
+
+/**
+ * Takes the scraped ingredients list from a recipe and returns and array of all the common ingredients found
+ * @param {String array} rawIngredients
+ * @return an array of all the common ingredients found in the array
+ */
 function simplify_ingredients(array $rawIngredients): array {
     $commonIngredients = [
         "almond flour", "flour", "sugar", "baking powder", "salt", "milk", "bacon", "egg", "butter", "vanilla extract", "celery", "chicken", "sweet potatoes",

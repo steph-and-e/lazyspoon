@@ -1,4 +1,11 @@
 <?php
+/**
+ * Author: Stephanie
+ * Student Number: 400562559
+ * Date Created: 2025/04/24
+ * Description: Returns a json encoded array of ingredient suggestions based on user input
+ */
+
 // Include database connection
 include 'connect.php';
 

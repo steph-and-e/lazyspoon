@@ -55,7 +55,15 @@
             $_SESSION['logged_in'] = true;
 
             echo "<p class='success'>Login successful! Redirecting...</p>";
-            header("Refresh: 2; url=dashboard.php"); // Redirect after 2 seconds
+
+            // Redirect admins to Scraper, redirect users to Search
+            if ($_SESSION['role'] == "admin") {
+                header("Refresh: 2; url=scraper.php"); // Redirect after 2 seconds
+            }
+            else {
+                header("Refresh: 2; url=search.php"); // Redirect after 2 seconds
+            }
+
             return true;
         } else {
             echo "<p class='error'>Incorrect password. Try again! <a href='reset_password.php'>Forgot your password?</a></p>";
