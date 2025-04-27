@@ -194,6 +194,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitRecipe'])) {
         echo "<p style='color: green;'>Recipe successfully submitted!</p>";
     }
 }
+
+// If admin clicks "Cancel", redirect them back to admin dashboard
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelScraping'])) {
+    // redirect to admin dashboard
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -255,6 +262,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitRecipe'])) {
             </form>
 
             <!-- Allow admin to cancel recipe scraping (goes back to ___ page) -->
+            <form method="post">
+                <button type="submit" name="cancelScraping">Cancel</button>
+            </form>
 
         <?php endif; ?>
     <?php endif; ?>
