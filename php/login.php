@@ -123,7 +123,7 @@
                     <input type="checkbox">
                     <label>Remember me </label>
                 </div>
-                <span class="span">Forgot password?</span>
+                <span class="span"><a href="reset_password.php">Forgot password?</a></span>
             </div>
             <button class="button-submit">Sign In</button>
             <p class="p">Don't have an account? <span class="span"><a href="register.php">Sign Up</a></span>
