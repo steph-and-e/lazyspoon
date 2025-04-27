@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js"></script>
 
 </head>
 
@@ -120,7 +120,7 @@
         <p class="p">Don't have an account? <span class="span"><a href="register.php">Sign Up</a></span>
 
         </p>
-        <p class="p line">Or With</p>
+        <!-- <p class="p line">Or With</p>
 
         <div class="flex-row">
             <button class="btn google">
@@ -155,7 +155,7 @@
                 Apple
 
             </button>
-        </div>
+        </div> -->
     </form>
 </body>
 
