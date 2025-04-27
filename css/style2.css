@@ -111,13 +111,20 @@ button[type="submit"]:active {
   }
 
 
-/*  */
+/* Profile styling */
 
-.logout-container {
+.profile-container {
     position: absolute;
     top: 10px;
     right: 10px;
+    display: flex;
 }
+
+#username {
+    padding: 10px;
+}
+
+/* Logout styling */
 
 .logout-button {
     padding: 10px 20px;

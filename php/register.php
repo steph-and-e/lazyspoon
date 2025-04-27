@@ -104,10 +104,11 @@
                         $_SESSION['logged_in'] = true;
                         $_SESSION['created_at'] = time();
 
-                        echo "<p class='success'>✅ Registration successful! Redirecting...</p>";
+                        echo "<p class='success'>✅ Registration successful! Redirecting to login...</p>";
 
                         // Redirect to member area
-                        header("Refresh: 2; url=dashboard.php");
+                        //header("Refresh: 2; url=dashboard.php");
+                        header("Refresh: 2; url=login.php");
                         return true;
                     } else {
                         echo "<p class='error'>❌ There was an error with the registration. Please try again.</p>";
