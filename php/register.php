@@ -81,17 +81,18 @@
 
             try {
                 // Insert new user
-                $stmt = $dbh->prepare("INSERT INTO users (username, email, password_hash, `role`) VALUES (?, ?, ?, ?)");
+                $stmt = $dbh->prepare("INSERT INTO users 
+                (username, email, password_hash, role, created_at, last_activity) 
+                VALUES (?, ?, ?, 'user', NOW(), NOW()");
                 $success = $stmt->execute([$username, $email, $hash, "user"]);
 
                 if ($success) {
-                    echo "<div class='message-container'><p class='success'>✅ Registration successful! Redirecting...</p></div>";
                     echo '<script>
                     document.querySelectorAll(".inputForm").forEach(el => {
                         el.classList.add("success");
                     });
                 </script>';
-                    // Start session immediately after registration
+                    // Start session after registration
                     session_start();
                     session_regenerate_id(true);
 
