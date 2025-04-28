@@ -1,3 +1,10 @@
+/**
+ * Author: Stephanie
+ * Student Number: 400562559
+ * Date Created: 2025/04/24
+ * Description: AJAX javascript for ingredient search autocomplete function
+ */
+
 window.addEventListener("load", function(event) {
     const input = document.getElementById("ingredients");
     const suggestionsList = document.getElementById("suggestions-list");
