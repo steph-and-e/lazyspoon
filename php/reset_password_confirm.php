@@ -1,68 +1,95 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+/**
+ * reset_password_confirm.php
+ * Author: Mostafa
+ * Student Number: 400599915
+ * Date Created: 2025/04/25
+ * 
+ * Description:
+ * This script handles password reset confirmation by:
+ * - Validating reset tokens from email links
+ * - Enforcing token expiration (1 hour)
+ * - Processing password updates with security checks
+ * - Providing user feedback and error handling
+ */
 
 require 'vendor/autoload.php';
 include "connect.php";
 
+// Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Initialize variables
 $error = '';
 $success = '';
 $show_form = false;
 
-// Check if token exists in URL
-if (isset($_GET['token'])) {
-    $token = $_GET['token'];
+/**
+ * Validates reset token and processes password update if valid
+ * 
+ * @global PDO $dbh Database connection
+ * @global string $error Error message
+ * @global string $success Success message
+ * @global bool $show_form Whether to show password form
+ */
+function processPasswordReset() {
+    global $dbh, $error, $success, $show_form;
     
-    // Verify token with database
-    $stmt = $dbh->prepare("SELECT user_id, reset_token_expires FROM users WHERE reset_token = ?");
-    $stmt->execute([$token]);
-    $user = $stmt->fetch();
-    
-    if ($user) {
-        // Check if token is expired
-        $now = date("Y-m-d H:i:s");
-        if ($user['reset_token_expires'] > $now) {
-            $show_form = true;
-            
-            // Process password update
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $new_password = $_POST['password'];
-                $confirm_password = $_POST['confirm_password'];
+    // Check if token exists in URL
+    if (isset($_GET['token'])) {
+        $token = $_GET['token'];
+        
+        // Verify token with database
+        $stmt = $dbh->prepare("SELECT user_id, reset_token_expires FROM users WHERE reset_token = ?");
+        $stmt->execute([$token]);
+        $user = $stmt->fetch();
+        
+        if ($user) {
+            // Check if token is expired (1 hour validity)
+            $now = date("Y-m-d H:i:s");
+            if ($user['reset_token_expires'] > $now) {
+                $show_form = true;
                 
-                // Validate passwords
-                if (empty($new_password)) {
-                    $error = "Password cannot be empty";
-                } elseif (strlen($new_password) < 8) {
-                    $error = "Password must be at least 8 characters";
-                } elseif ($new_password !== $confirm_password) {
-                    $error = "Passwords do not match";
-                } else {
-                    // Hash the new password
-                    $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                // Process password update form submission
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $new_password = $_POST['password'];
+                    $confirm_password = $_POST['confirm_password'];
                     
-                    // Update password and clear reset token
-                    $updateStmt = $dbh->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE user_id = ?");
-                    if ($updateStmt->execute([$hashed_password, $user['user_id']])) {
-                        $success = "Your password has been updated successfully!";
-                        $show_form = false;
+                    // Validate passwords
+                    if (empty($new_password)) {
+                        $error = "Password cannot be empty";
+                    } elseif (strlen($new_password) < 8) {
+                        $error = "Password must be at least 8 characters";
+                    } elseif ($new_password !== $confirm_password) {
+                        $error = "Passwords do not match";
                     } else {
-                        $error = "Failed to update password. Please try again.";
+                        // Hash the new password securely
+                        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                        
+                        // Update password and clear reset token
+                        $updateStmt = $dbh->prepare("UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE user_id = ?");
+                        if ($updateStmt->execute([$hashed_password, $user['user_id']])) {
+                            $success = "Your password has been updated successfully!";
+                            $show_form = false;
+                        } else {
+                            $error = "Failed to update password. Please try again.";
+                        }
                     }
                 }
+            } else {
+                $error = "This reset link has expired. Please request a new one.";
             }
         } else {
-            $error = "This reset link has expired. Please request a new one.";
+            $error = "Invalid reset token. Please check the link or request a new one.";
         }
     } else {
-        $error = "Invalid reset token. Please check the link or request a new one.";
+        $error = "No reset token provided.";
     }
-} else {
-    $error = "No reset token provided.";
 }
+
+// Process the password reset
+processPasswordReset();
 ?>
 
 <!DOCTYPE html>
@@ -83,6 +110,7 @@ if (isset($_GET['token'])) {
             align-items: center;
             min-height: 100vh;
         }
+        
         .reset-container {
             background: white;
             padding: 2rem;
@@ -91,19 +119,23 @@ if (isset($_GET['token'])) {
             width: 100%;
             max-width: 400px;
         }
+        
         h2 {
             margin-top: 0;
             color: #333;
             text-align: center;
         }
+        
         .form-group {
             margin-bottom: 1rem;
         }
+        
         label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: bold;
         }
+        
         input[type="password"] {
             width: 100%;
             padding: 0.75rem;
@@ -111,6 +143,7 @@ if (isset($_GET['token'])) {
             border-radius: 4px;
             font-size: 1rem;
         }
+        
         button {
             background: #007bff;
             color: white;
@@ -122,22 +155,27 @@ if (isset($_GET['token'])) {
             width: 100%;
             transition: background 0.3s;
         }
+        
         button:hover {
             background: #0056b3;
         }
+        
         .alert {
             padding: 0.75rem;
             margin-bottom: 1rem;
             border-radius: 4px;
         }
+        
         .alert.success {
             background: #d4edda;
             color: #155724;
         }
+        
         .alert.error {
             background: #f8d7da;
             color: #721c24;
         }
+        
         .login-link {
             text-align: center;
             margin-top: 1rem;

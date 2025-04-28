@@ -1,41 +1,60 @@
 <?php
 /**
+ * search.php
  * Author: Stephanie
  * Student Number: 400562559
  * Date Created: 2025/04/24
- * Description: Allows users to search for recipes based on ingredients
+ * 
+ * Description: 
+ * This file handles recipe searching functionality. It allows authenticated users to:
+ * - Search for recipes by ingredients (with autocomplete suggestions)
+ * - View matching recipes with their details
+ * - Access recipe reviews
+ * The page maintains user session and provides logout functionality.
  */
 
-// Start the session
+// Start the session and retrieve username
 session_start();
 $username = $_SESSION['username'];
-// $_SESSION['user_id'];
-// $_SESSION['username'];
-// $_SESSION['email'];
-// $_SESSION['role'];
 
 // Include the database connection
 include "connect.php";
 
-// Process the search form submission
-$searchResults = [];
-if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
-    $ingredients = array_map('trim', explode(',', $_GET['ingredients']));
-    $placeholders = implode(',', array_fill(0, count($ingredients), '?'));
-    $command = "
-        SELECT r.id, r.title, r.url, r.cover_image
-        FROM recipes r
-        INNER JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-        INNER JOIN ingredients i ON ri.ingredient_id = i.id
-        WHERE i.name IN ($placeholders)
-        GROUP BY r.id
-        HAVING COUNT(DISTINCT i.name) = ?
-    ";
-    $stmt = $dbh->prepare($command);
-    $params = array_merge($ingredients, [count($ingredients)]);
-    $stmt->execute($params);
-    $searchResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
+/**
+ * Processes the search form and finds recipes containing all specified ingredients
+ * 
+ * @global PDO $dbh Database connection handle
+ * @return array Returns an array of matching recipes or empty array if none found
+ */
+function searchRecipesByIngredients() {
+    global $dbh;
+    $searchResults = [];
+    
+    if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
+        $ingredients = array_map('trim', explode(',', $_GET['ingredients']));
+        $placeholders = implode(',', array_fill(0, count($ingredients), '?'));
+        
+        $command = "
+            SELECT r.id, r.title, r.url, r.cover_image
+            FROM recipes r
+            INNER JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+            INNER JOIN ingredients i ON ri.ingredient_id = i.id
+            WHERE i.name IN ($placeholders)
+            GROUP BY r.id
+            HAVING COUNT(DISTINCT i.name) = ?
+        ";
+        
+        $stmt = $dbh->prepare($command);
+        $params = array_merge($ingredients, [count($ingredients)]);
+        $stmt->execute($params);
+        $searchResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    return $searchResults;
 }
+
+// Perform search if ingredients were submitted
+$searchResults = searchRecipesByIngredients();
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
 
     <!-- Profile and logout button -->
     <div class="profile-container">
-        <p id="username"><?=$username?></p>
+        <p id="username"><?= htmlspecialchars($username) ?></p>
         <a href="logout.php" class="logout-button">Logout</a>
     </div>
 
@@ -71,6 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
                 <li>
                     <h3><a href="<?= htmlspecialchars($recipe['url']) ?>"><?= htmlspecialchars($recipe['title']) ?></a></h3>
                     <img src="<?= htmlspecialchars($recipe['cover_image']) ?>" alt="Recipe Image" height="100">
+                    <a href="view_reviews.php?recipe_id=<?= $recipe['id'] ?>">View/Add Reviews</a>
                 </li>
             <?php endforeach; ?>
         </ul>

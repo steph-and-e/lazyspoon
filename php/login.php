@@ -7,13 +7,31 @@
     <title>login</title>
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/script.js"></script>
-
 </head>
 
 <body>
     <?php
+    /*
+    * login.php
+    * Student Name: Mostafa Faghani
+    * Student Number: 400599915
+    * Date Created: 2025-04-20
+    * 
+    * Description: 
+    * This file handles user authentication. It provides a login form and processes
+    * submitted credentials to authenticate users against the database. Successful
+    * login initiates a session and redirects users based on their role (admin or regular user).
+    */
+
     include "connect.php";
 
+    /**
+     * Fetches user data from the database based on username or email
+     * 
+     * @param string $identifier The username or email to search for
+     * @param PDO $dbh Database connection handle
+     * @return array|bool Returns user data as associative array if found, false otherwise
+     */
     function fetchUser($identifier, $dbh)
     {
         if (empty($identifier)) {
@@ -37,8 +55,13 @@
         }
     }
 
-
-
+    /**
+     * Validates user login credentials and initiates session if successful
+     * 
+     * @param string $password The password to verify
+     * @param array|bool $user User data from database or false if not found
+     * @return bool Returns true if login successful, false otherwise
+     */
     function validateLogin($password, $user)
     {
         if (!$user) {

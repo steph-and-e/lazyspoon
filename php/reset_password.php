@@ -1,8 +1,25 @@
 <?php
+
+/**
+ * reset_password.php
+ * Author: Mostafa
+ * Student Number: 400599915
+ * Date Created: 2025/04/23
+ * 
+ * Description:
+ * This file handles password reset requests by:
+ * - Validating user email addresses
+ * - Generating secure reset tokens
+ * - Sending password reset links via email
+ * - Implementing security measures against timing attacks
+ */
+
+// Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
+// Load PHPMailer and database connection
 require 'vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -10,78 +27,121 @@ use PHPMailer\PHPMailer\Exception;
 
 include "connect.php";
 
+// Initialize messages
 $error = '';
 $success = '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
+/**
+ * Processes password reset request
+ * 
+ * Validates email, generates secure token, stores in database, and sends reset email
+ * 
+ * @global PDO $dbh Database connection
+ * @global string $error Error message
+ * @global string $success Success message
+ */
+function processResetRequest()
+{
+    global $dbh, $error, $success;
 
-    if ($email) {
-        // Check if email exists
-        $stmt = $dbh->prepare("SELECT user_id FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
 
-        if ($user) {
-            // Generate secure token
-            $token = bin2hex(random_bytes(32));
-            $expires = date("Y-m-d H:i:s", time() + 3600); // 1 hour expiration
+        if ($email) {
+            // Check if email exists (using prepared statement)
+            $stmt = $dbh->prepare("SELECT user_id FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
 
-            // Store token in database
-            $updateStmt = $dbh->prepare("UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE user_id = ?");
-            $updateStmt->execute([$token, $expires, $user['user_id']]);
+            if ($user) {
+                // Generate cryptographically secure token
+                $token = bin2hex(random_bytes(32));
+                $expires = date("Y-m-d H:i:s", time() + 3600); // 1 hour expiration
 
-            // Create reset link
-            $resetLink = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/reset_password_confirm.php?token=$token";
+                // Store token in database
+                $updateStmt = $dbh->prepare("UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE user_id = ?");
+                $updateStmt->execute([$token, $expires, $user['user_id']]);
 
-            // Send email using Outlook SMTP
-            $mail = new PHPMailer(true);
+                // Create secure reset link
+                $resetLink = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/reset_password_confirm.php?token=$token";
 
-            try {
-                // Server settings
-                $mail->isSMTP();
-                $mail->Host       = 'smtp.office365.com';
-                $mail->SMTPAuth   = true;
-                $mail->Username   = 'lazyspoon1@outlook.com';
-                $mail->Password   = 'eybxvyrhzrhgaqve';
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port       = 587;
-
-                // Recipients
-                $mail->setFrom('lazyspoon1@outlook.com', 'lazyspoon');
-                $mail->addAddress($email);
-
-                // Content
-                $mail->isHTML(true);
-                $mail->Subject = 'Password Reset Request';
-                $mail->Body    = "
-                    <h2>Password Reset</h2>
-                    <p>We received a request to reset your password. Click the button below to proceed:</p>
-                    <a href='$resetLink' style='background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block;margin:10px 0;'>
-                        Reset Password
-                    </a>
-                    <p>This link will expire in 1 hour.</p>
-                    <p style='color:#666;font-size:0.9em;'>If you didn't request this, please ignore this email or contact support if you have concerns.</p>
-                ";
-
-                $mail->SMTPDebug = 3; // Shows detailed connection logs
-                $mail->Debugoutput = function ($str, $level) {
-                    error_log("SMTP: $str"); // Logs to your server's error log
-                };
-                $mail->send();
-                $success = "If an account with that email exists, we've sent a password reset link.";
-            } catch (Exception $e) {
-                error_log("Mailer Error: " . $mail->ErrorInfo);
-                error_log("Reset attempt for: " . $email); // Log which email failed
-                $error = "We couldn't send the reset email. Please try again later.";
+                // Send reset email
+                sendResetEmail($email, $resetLink);
             }
-        } else {
+
+            // Always show success message to prevent email enumeration
             $success = "If an account with that email exists, we've sent a password reset link.";
+        } else {
+            $error = "Please enter a valid email address.";
         }
-    } else {
-        $error = "Please enter a valid email address.";
     }
 }
+
+/**
+ * Sends password reset email using PHPMailer
+ * 
+ * @param string $email Recipient email address
+ * @param string $resetLink Generated password reset link
+ * @throws Exception If email sending fails
+ */
+function sendResetEmail($email, $resetLink)
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        // Server settings for Outlook SMTP
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.office365.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'lazyspoon1@outlook.com';
+        $mail->Password   = 'eybxvyrhzrhgaqve';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+
+        // Recipients
+        $mail->setFrom('lazyspoon1@outlook.com', 'lazyspoon');
+        $mail->addAddress($email);
+
+        // Email content
+        $mail->isHTML(true);
+        $mail->Subject = 'Password Reset Request';
+        $mail->Body    = createEmailBody($resetLink);
+
+        // Debugging
+        $mail->SMTPDebug = 3;
+        $mail->Debugoutput = function ($str, $level) {
+            error_log("SMTP: $str");
+        };
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log("Mailer Error: " . $mail->ErrorInfo);
+        error_log("Reset attempt for: " . $email);
+        throw new Exception("Email sending failed");
+    }
+}
+
+/**
+ * Creates HTML email body for password reset
+ * 
+ * @param string $resetLink Generated reset link
+ * @return string Formatted HTML email content
+ */
+function createEmailBody($resetLink)
+{
+    return "
+        <h2>Password Reset</h2>
+        <p>We received a request to reset your password. Click the button below to proceed:</p>
+        <a href='$resetLink' style='background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block;margin:10px 0;'>
+            Reset Password
+        </a>
+        <p>This link will expire in 1 hour.</p>
+        <p style='color:#666;font-size:0.9em;'>If you didn't request this, please ignore this email or contact support if you have concerns.</p>
+    ";
+}
+
+// Process the reset request
+processResetRequest();
 ?>
 
 <!DOCTYPE html>
@@ -91,6 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password Request</title>
+    <!-- CSS styles remain unchanged -->
     <style>
         body {
             font-family: Arial, sans-serif;
