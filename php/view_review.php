@@ -3,7 +3,7 @@
 /**
  * view_review.php
  * Author: Rebecca
- * Student Number: 
+ * Student Number: Yangr127
  * Date Created: 2025/04/30
  * 
  * Description:
@@ -268,7 +268,6 @@ $reviews = getReviews($recipe_title);
             <p>No reviews yet. Be the first to review!</p>
         <?php endif; ?>
     </section>
-    <img src=/img/lazyspoon.png" alt="">
 </body>
 
 </html>

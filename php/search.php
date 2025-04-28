@@ -67,6 +67,62 @@ $searchResults = searchRecipesByIngredients();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Search</title>
     <link rel="stylesheet" href="../css/style2.css">
+    <style>
+        /* Style for all buttons */
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        /* Primary button style */
+        .btn-primary {
+            background-color: #4CAF50;
+            /* Green */
+            color: white;
+            border: 1px solid #45a049;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Secondary button style */
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #212529;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e6ea;
+        }
+
+        /* Recipe image styling */
+        .recipe-image {
+            max-width: 200px;
+            height: auto;
+            border-radius: 4px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Recipe item styling */
+        .recipe-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 
 <body>
@@ -91,10 +147,13 @@ $searchResults = searchRecipesByIngredients();
         <h2>Recipes Found</h2>
         <ul>
             <?php foreach ($searchResults as $recipe): ?>
-                <li>
-                    <h3><a href="<?= htmlspecialchars($recipe['url']) ?>"><?= htmlspecialchars($recipe['title']) ?></a></h3>
-                    <img src="<?= htmlspecialchars($recipe['cover_image']) ?>" alt="Recipe Image" height="100">
-                    <a href="view_review.php?recipe_title=<?= urlencode($recipe['title']) ?>">View/Add Reviews</a>
+                <li class="recipe-item">
+                    <h3><?= htmlspecialchars($recipe['title']) ?></a></h3>
+                    <img src="<?= htmlspecialchars($recipe['cover_image']) ?>" alt="Recipe Image" class="recipe-image">
+                    <div class="button-group">
+                        <a href="<?= htmlspecialchars($recipe['url']) ?>" class="btn btn-secondary">View Recipe</a>
+                        <a href="view_review.php?recipe_title=<?= urlencode($recipe['title']) ?>" class="btn btn-primary">View/Add Reviews</a>
+                    </div>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -102,7 +161,6 @@ $searchResults = searchRecipesByIngredients();
         <p>No recipes found with those ingredients.</p>
     <?php endif; ?>
 
-    <img src=/img/lazyspoon.png" alt="">
     <script src="../js/search.js"></script>
 </body>
 

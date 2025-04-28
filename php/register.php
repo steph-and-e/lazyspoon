@@ -12,7 +12,6 @@
  * - Duplicate account prevention
  * - Immediate session creation upon registration
  * - Visual feedback for form errors
- * - Google sign-up option
  */
 
 // Start session if not already started
@@ -224,15 +223,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button class="button-submit" type="submit">Sign Up</button>
                 <p class="p">Already have an account? <span class="span"><a href="login.php">Login</a></span></p>
                 
-                <!-- Google Sign-Up Option -->
-                <div class="flex-row">
-                    <button class="btn google" type="button">
-                        <svg version="1.1" width="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <!-- Google logo SVG paths -->
-                        </svg>
-                        Google
-                    </button>
-                </div>
             </form>
         </div>
     </div>
