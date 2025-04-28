@@ -18,6 +18,13 @@
 session_start();
 include "connect.php";
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    die('User not logged in.');
+}
+
+$user_id = $_SESSION['user_id']; // get user_id from session
+
 /**
  * Processes review form submission
  * 
@@ -48,9 +55,9 @@ function processReviewSubmission() {
         }
         
         // Prepare and execute SQL statement
-        $command = "INSERT INTO reviews (dish_name, first_name, last_name, rating, comment) 
-                   VALUES (?, ?, ?, ?, ?)";
-        $stmt = $dbh->prepare($command);
+        $stmt = $dbh->prepare("INSERT INTO reviews 
+        (recipe_title, user_id, first_name, last_name, rating, comment) 
+        VALUES (?, ?, ?, ?, ?, ?)");
         $success = $stmt->execute([$dish_name, $first_name, $last_name, $rating, $comment]);
         
         // Set appropriate session message
@@ -61,7 +68,7 @@ function processReviewSubmission() {
             error_log("Review submission failed: " . implode(", ", $stmt->errorInfo()));
         }
         
-        header("Location: view_reviews.php");
+        header("Location: view_review.php");
         exit();
     }
 }

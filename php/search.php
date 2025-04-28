@@ -1,4 +1,5 @@
 <?php
+
 /**
  * search.php
  * Author: Stephanie
@@ -26,14 +27,15 @@ include "connect.php";
  * @global PDO $dbh Database connection handle
  * @return array Returns an array of matching recipes or empty array if none found
  */
-function searchRecipesByIngredients() {
+function searchRecipesByIngredients()
+{
     global $dbh;
     $searchResults = [];
-    
+
     if ($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET['ingredients'])) {
         $ingredients = array_map('trim', explode(',', $_GET['ingredients']));
         $placeholders = implode(',', array_fill(0, count($ingredients), '?'));
-        
+
         $command = "
             SELECT r.id, r.title, r.url, r.cover_image
             FROM recipes r
@@ -43,13 +45,13 @@ function searchRecipesByIngredients() {
             GROUP BY r.id
             HAVING COUNT(DISTINCT i.name) = ?
         ";
-        
+
         $stmt = $dbh->prepare($command);
         $params = array_merge($ingredients, [count($ingredients)]);
         $stmt->execute($params);
         $searchResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     return $searchResults;
 }
 
@@ -59,12 +61,14 @@ $searchResults = searchRecipesByIngredients();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Search</title>
     <link rel="stylesheet" href="../css/style2.css">
 </head>
+
 <body>
 
     <!-- Profile and logout button -->
@@ -90,7 +94,7 @@ $searchResults = searchRecipesByIngredients();
                 <li>
                     <h3><a href="<?= htmlspecialchars($recipe['url']) ?>"><?= htmlspecialchars($recipe['title']) ?></a></h3>
                     <img src="<?= htmlspecialchars($recipe['cover_image']) ?>" alt="Recipe Image" height="100">
-                    <a href="view_reviews.php?recipe_id=<?= $recipe['id'] ?>">View/Add Reviews</a>
+                    <a href="view_review.php?recipe_title=<?= urlencode($recipe['title']) ?>">View/Add Reviews</a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -100,4 +104,5 @@ $searchResults = searchRecipesByIngredients();
 
     <script src="../js/search.js"></script>
 </body>
+
 </html>
