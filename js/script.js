@@ -1,3 +1,10 @@
+/**
+ * Author: Mostafa
+ * Student Number: 400599915
+ * Date Created: 2025/04/24
+ * Description: Javascript for login
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("password");
     const eyeOpen = document.querySelector(".eye-open");
