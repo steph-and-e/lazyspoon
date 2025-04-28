@@ -102,6 +102,7 @@ $searchResults = searchRecipesByIngredients();
         <p>No recipes found with those ingredients.</p>
     <?php endif; ?>
 
+    <img src=/img/lazyspoon.png" alt="">
     <script src="../js/search.js"></script>
 </body>
 

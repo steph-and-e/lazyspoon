@@ -13,6 +13,13 @@
 session_start();
 include 'connect.php';
 
+//Get user_id from session
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['review_message'] = "Please log in to submit reviews.";
+    header("Location: login.php");
+    exit();
+}
+
 // Get the recipe title from URL parameter
 $recipe_title = isset($_GET['recipe_title']) ? urldecode($_GET['recipe_title']) : '';
 
@@ -261,6 +268,7 @@ $reviews = getReviews($recipe_title);
             <p>No reviews yet. Be the first to review!</p>
         <?php endif; ?>
     </section>
+    <img src=/img/lazyspoon.png" alt="">
 </body>
 
 </html>

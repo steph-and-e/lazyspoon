@@ -146,91 +146,66 @@ button[type="submit"]:active {
 }
 /* Recipe Details Page */
 
-.row{
-    display: flex;
-    flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: -15px;
+.review {
+    border-bottom: 1px solid #eee;
+    padding: 20px 0;
 }
-.col-12 {
-    flex: 0 0 100%;
-    max-width: 100%;
-}
-col-12 col-lg-6{
-    position: relative;
-    width: 100%;
-    min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
-}
-.contact-form-area .form-control {
-    height: 52px;
-    width: 100%;
-    background-color: #f3f5f8;
-    font-size: 12px;
-    font-style: italic;
-    margin-bottom: 15px;
-    border: none;
-    border-left: 3px solid #f3f5f8;
-    border-radius: 0;
-    padding: 15px 30px;
-    -webkit-transition-duration: 500ms;
-    transition-duration: 500ms;
-}
-.form-control {
-    display: block;
-    width: 100%;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-}
-.contact-form-area textarea.form-control {
-    height: 200px;
 
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
 }
-.btn:not(:disabled):not(.disabled) {
-    cursor: pointer;
+
+.error {
+    background-color: #ffebee;
+    color: #c62828;
 }
-.delicious-btn {
-    display: inline-block;
-    min-width: 160px;
-    height: 60px;
-    color: #ffffff;
+
+.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
     border: none;
-    border-left: 3px solid #1c8314;
-    border-radius: 0;
-    padding: 0 30px;
-    font-size: 16px;
-    line-height: 58px;
-    font-weight: 600;
-    -webkit-transition-duration: 500ms;
-    transition-duration: 500ms;
-    text-transform: capitalize;
-    background-color: #40ba37;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
 }
-.mt-30 {
-    margin-top: 30px !important;
+
+.rating-stars {
+    color: #FFD700;
+    font-size: 1.2em;
 }
-.btn{
-    display: inline-block;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    border: 1px solid transparent;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: .25rem;
-    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+.timestamp {
+    color: #777;
+    font-size: 0.9em;
+    font-style: italic;
 }
