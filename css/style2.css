@@ -1,16 +1,9 @@
-/**
- * style.css
- * Author: lazyspoon
- * Date Created: 2025/04/21
- * 
- * Description:
- * This stylesheet provides all styling for the recipe application including:
- * - Global/reset styles
- * - Form styling
- * - Recipe display components
- * - Navigation and profile elements
- * - Responsive layout
- * -
+/* Author: Stephanie
+ * Student Number: 400562559
+ * Date Created: 2025/04/24
+ * Description: Stylesheet for Lazy Spoon main site
+ */
+
 /* General Styling */
 * {
     margin: 0;
