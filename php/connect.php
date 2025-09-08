@@ -1,22 +1,16 @@
 <?php
-/**
- * Author: Mostafa
- * Student Number: 400599915
- * Date Created: 2025/03/29
- * Description: Establishes a connection to the MySQL database.
- */
 try {
     $dbh = new PDO(
-         "mysql:host=localhost;dbname=faghanim_db",
-         "faghanim_local",
-         "JUCaon3+"
-        // "mysql:host=localhost;dbname=lazy_spoon",
-        // "root",
-        // ""
-        // "mysql:host=localhost;dbname=li3424_db",
-        // "li3424_local",
-        // "uDqHFzSw"
+        "mysql:host=localhost;dbname=your_database_name;charset=utf8", // DSN
+        "your_username", // Database username
+        "your_password"  // Database password
     );
-} catch (Exception $e) {
-    die("ERROR: Couldn't connect. {$e->getMessage()}");
+
+    // Set PDO error mode to exception
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    echo "Connected successfully!";
+} catch (PDOException $e) {
+    die("ERROR: Couldn't connect. " . $e->getMessage());
 }
+?>
